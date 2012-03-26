@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ScrollView1"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#b0ffffff" >
+
+    <EditText
+        android:id="@+id/editText1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:background="@null"
+        android:ems="10"
+        android:gravity="top"
+        android:inputType="textMultiLine"
+        android:padding="20dp"
+        android:textAppearance="?android:attr/textAppearanceLarge" >
+
+        <requestFocus />
+    </EditText>
+
+</ScrollView>
