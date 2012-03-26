@@ -7,7 +7,10 @@ import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.Gallery;
 import android.widget.TextView;
 
 public class ZenAdapter extends PagerAdapter {
@@ -52,6 +55,18 @@ public class ZenAdapter extends PagerAdapter {
     }
 
     container.addView(view);
+    
+    if (position == 2) {
+      // initialize the gallery
+      Gallery gallery = (Gallery) context.findViewById(R.id.themegallery);
+
+      gallery.setAdapter(new ImageAdapter(context));
+
+      gallery.setOnItemClickListener(new OnItemClickListener() {
+          public void onItemClick(AdapterView parent, View v, int position, long id) {
+          }
+      });      
+    }
 
     return view;
   }
