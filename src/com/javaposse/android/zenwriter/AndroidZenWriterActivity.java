@@ -173,6 +173,7 @@ public class AndroidZenWriterActivity extends Activity {
 					content.append(br.readLine()).append("\n");
 				}
 				editText.setText(content.toString());
+				editText.setSelection(content.length());
 
 			} catch (IOException e) {
 				Log.e("SaveFile", "Failed to save file: ", e);
