@@ -16,8 +16,7 @@ import android.widget.TextView;
 public class ZenAdapter extends PagerAdapter {
 
   private Activity context;
-  
-  
+
   public ZenAdapter(Activity context) {
     super();
     this.context = context;
@@ -31,8 +30,8 @@ public class ZenAdapter extends PagerAdapter {
   @Override
   public Object instantiateItem(ViewGroup container, int position) {
     View view;
-    LayoutInflater inflater = 
-        (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    LayoutInflater inflater = (LayoutInflater) context
+        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
     switch (position) {
 
@@ -40,10 +39,10 @@ public class ZenAdapter extends PagerAdapter {
       view = inflater.inflate(R.layout.editview, null);
       break;
     case 2:
-        view = inflater.inflate(R.layout.thememanager, null);
-        Button btn = (Button) view.findViewById(R.id.SelectBackgroundButton);
-        btn.setOnClickListener(new SelectImageListener(context));
-        break;
+      view = inflater.inflate(R.layout.thememanager, null);
+      Button btn = (Button) view.findViewById(R.id.SelectBackgroundButton);
+      btn.setOnClickListener(new SelectImageListener(context));
+      break;
     case 0:
     default:
       TextView textView = new TextView(context);
@@ -55,7 +54,7 @@ public class ZenAdapter extends PagerAdapter {
     }
 
     container.addView(view);
-    
+
     if (position == 2) {
       // initialize the gallery
       Gallery gallery = (Gallery) context.findViewById(R.id.themegallery);
@@ -63,9 +62,24 @@ public class ZenAdapter extends PagerAdapter {
       gallery.setAdapter(new ImageAdapter(context));
 
       gallery.setOnItemClickListener(new OnItemClickListener() {
-          public void onItemClick(AdapterView parent, View v, int position, long id) {
+        public void onItemClick(AdapterView parent, View v, int position,
+            long id) {
+          // find the layout object
+          View top = context.findViewById(R.id.Top);
+          
+          int selected = 0;
+          
+          switch (position) {
+          case 0: selected = R.drawable.beach1; break;
+          case 1: selected = R.drawable.kauai; break;
+          case 2: selected = R.drawable.mirror; break;
+          case 3: selected = R.drawable.napali; break;
+          default: selected = R.drawable.stonearch; break;
           }
-      });      
+          
+          top.setBackgroundResource(selected);
+        }
+      });
     }
 
     return view;
