@@ -6,6 +6,11 @@
     android:background="@drawable/walloffog"
     android:orientation="vertical"
     android:padding="40dp" >
+    
+    <android.support.v4.view.ViewPager
+        android:id="@+id/ViewPager1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
     <ScrollView
         android:id="@+id/ScrollView1"

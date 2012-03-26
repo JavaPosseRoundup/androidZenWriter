@@ -2,6 +2,7 @@ package com.javaposse.android.zenwriter;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
 
 public class AndroidZenWriterActivity extends Activity {
     /** Called when the activity is first created. */
@@ -9,5 +10,6 @@ public class AndroidZenWriterActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        View pager = findViewById(R.id.ViewPager1);
     }
 }
