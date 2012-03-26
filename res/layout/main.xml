@@ -3,7 +3,7 @@
     android:id="@+id/Top"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/walloffog"
+    android:background="@drawable/mirror"
     android:orientation="vertical"
     android:padding="40dp" >
 
