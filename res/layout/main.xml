@@ -3,8 +3,8 @@
     android:id="@+id/Top"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:layout_margin="40dp"
-    android:background="@drawable/writer_border"
+    android:padding="40dp"
+    android:background="@drawable/walloffog"
     android:orientation="vertical" >
 
     <ScrollView
@@ -14,7 +14,7 @@
 
         <EditText
             android:id="@+id/editText1"
-            android:background="@null"
+            android:background="#b0ffffff"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
