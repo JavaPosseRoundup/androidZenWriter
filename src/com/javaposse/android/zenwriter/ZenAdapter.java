@@ -11,7 +11,7 @@ import android.widget.TextView;
 public class ZenAdapter extends PagerAdapter {
 
   private Context context;
-  
+
   public ZenAdapter(Context context) {
     super();
     this.context = context;
@@ -25,15 +25,20 @@ public class ZenAdapter extends PagerAdapter {
   @Override
   public Object instantiateItem(ViewGroup container, int position) {
     View view;
-    
+    LayoutInflater inflater = 
+        (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
     switch (position) {
 
     case 1:
-      LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
       view = inflater.inflate(R.layout.editview, null);
       break;
-    case 0:
+
     case 2:
+      view = inflater.inflate(R.layout.thememanager, null);
+      break;
+      
+    case 0:
     default:
       TextView textView = new TextView(context);
       textView.setText("" + position);
@@ -47,8 +52,7 @@ public class ZenAdapter extends PagerAdapter {
 
     return view;
   }
-  
- 
+
   @Override
   public void destroyItem(ViewGroup container, int position, Object object) {
     container.removeView((View) object);

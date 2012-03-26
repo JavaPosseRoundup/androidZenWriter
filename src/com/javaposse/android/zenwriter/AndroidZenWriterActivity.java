@@ -1,6 +1,7 @@
 package com.javaposse.android.zenwriter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -14,5 +15,10 @@ public class AndroidZenWriterActivity extends Activity {
         ViewPager pager = (ViewPager) findViewById(R.id.ViewPager1);
         pager.setAdapter(new ZenAdapter(this));
         pager.setCurrentItem(1, true);
+    }
+    
+    public void openThemeSettings(View parent) {
+      Intent settingsActivity = new Intent(this, PrefsActivity.class);
+      startActivity(settingsActivity);
     }
 }
