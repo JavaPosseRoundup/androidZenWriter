@@ -17,7 +17,8 @@ public class SelectImageListener implements OnClickListener {
 	public void onClick(View v) {
 		Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
 		photoPickerIntent.setType("image/*");
-		context.startActivityForResult(photoPickerIntent, AndroidZenWriterActivity.SELECT_PHOTO);
+		context.startActivityForResult(photoPickerIntent,
+				AndroidZenWriterActivity.SELECT_PHOTO);
 	}
 
 }

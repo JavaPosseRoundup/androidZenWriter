@@ -26,7 +26,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class AndroidZenWriterActivity extends Activity {
-	
+
 	public static String currentFilename = "current.txt";
 
 	public static final int SELECT_PHOTO = 100;
@@ -40,7 +40,7 @@ public class AndroidZenWriterActivity extends Activity {
 		pager.setAdapter(new ZenAdapter(this));
 		pager.setCurrentItem(1, true);
 	}
-	
+
 	protected void onActivityResult(int requestCode, int resultCode,
 			Intent imageReturnedIntent) {
 		super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
@@ -54,30 +54,40 @@ public class AndroidZenWriterActivity extends Activity {
 				View top = findViewById(R.id.Top);
 				String path = getPath(selectedImage);
 				Log.i("SelectedImage", "File Path: " + path);
-			    File selectedImageFile = new File(path);
-				
+				File selectedImageFile = new File(path);
+
 				try {
 
-				    File destFile = getFileStreamPath(selectedImageFile.getName());
-				    
-			        if (!destFile.exists() && selectedImageFile.exists()) {
-			            Log.i("SelectedImage", "Copying file: " + selectedImageFile.getAbsolutePath());
-			        	FileChannel src = new FileInputStream(selectedImageFile).getChannel();
-			            FileChannel dst = openFileOutput(selectedImageFile.getName(), MODE_PRIVATE).getChannel();
-			            dst.transferFrom(src, 0, src.size());
-			            src.close();
-			            dst.close();
-			            Log.i("SelectedImage", "Copy Complete!");
-			            Log.i("SelectedImage", "Destination File: " + destFile.getAbsolutePath());
-			        }
-			        else {
-			        	Log.i("SelectedImage", "The file was already in our private storage: " + destFile.getAbsolutePath());
-			        }
-			        Toast.makeText(this, "Copied image: " + selectedImageFile.getName(), Toast.LENGTH_LONG).show();
+					File destFile = getFileStreamPath(selectedImageFile
+							.getName());
+
+					if (!destFile.exists() && selectedImageFile.exists()) {
+						Log.i("SelectedImage", "Copying file: "
+								+ selectedImageFile.getAbsolutePath());
+						FileChannel src = new FileInputStream(selectedImageFile)
+								.getChannel();
+						FileChannel dst = openFileOutput(
+								selectedImageFile.getName(), MODE_PRIVATE)
+								.getChannel();
+						dst.transferFrom(src, 0, src.size());
+						src.close();
+						dst.close();
+						Log.i("SelectedImage", "Copy Complete!");
+						Log.i("SelectedImage",
+								"Destination File: "
+										+ destFile.getAbsolutePath());
+					} else {
+						Log.i("SelectedImage",
+								"The file was already in our private storage: "
+										+ destFile.getAbsolutePath());
+					}
+					Toast.makeText(this,
+							"Copied image: " + selectedImageFile.getName(),
+							Toast.LENGTH_LONG).show();
 				} catch (Exception e) {
 					Log.e("SelectedImage", "Failed to Copy Image", e);
 				}
-				
+
 				BitmapFactory.Options opts = new BitmapFactory.Options();
 				DisplayMetrics metrics = new DisplayMetrics();
 				getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -85,47 +95,49 @@ public class AndroidZenWriterActivity extends Activity {
 				Log.i("SelectedImage", "Density: " + metrics.density);
 				opts.inTargetDensity = metrics.densityDpi;
 				opts.inSampleSize = 2;
-				Bitmap backgroundBitmap = BitmapFactory.decodeFile(selectedImageFile.getAbsolutePath(), opts);
-				
-				if(backgroundBitmap != null) {
-					BitmapDrawable drawable = new BitmapDrawable(backgroundBitmap);
+				Bitmap backgroundBitmap = BitmapFactory.decodeFile(
+						selectedImageFile.getAbsolutePath(), opts);
+
+				if (backgroundBitmap != null) {
+					BitmapDrawable drawable = new BitmapDrawable(
+							backgroundBitmap);
 					top.setBackgroundDrawable(drawable);
 				}
-				//Drawable d = Drawable.createFromPath(selectedImageFile.getAbsolutePath());
-				//top.setBackgroundDrawable(d);
+				// Drawable d =
+				// Drawable.createFromPath(selectedImageFile.getAbsolutePath());
+				// top.setBackgroundDrawable(d);
 
-				
 			}
 		}
 	}
-	
-	public String getPath(Uri uri) {
-	    String[] projection = { MediaStore.Images.Media.DATA };
-	    Cursor cursor = managedQuery(uri, projection, null, null, null);
-	    startManagingCursor(cursor);
-	    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-	    cursor.moveToFirst();
-	    return cursor.getString(column_index);
-	}
 
+	public String getPath(Uri uri) {
+		String[] projection = { MediaStore.Images.Media.DATA };
+		Cursor cursor = managedQuery(uri, projection, null, null, null);
+		startManagingCursor(cursor);
+		int column_index = cursor
+				.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+		cursor.moveToFirst();
+		return cursor.getString(column_index);
+	}
 
 	public void openThemeSettings(View parent) {
 		Intent settingsActivity = new Intent(this, PrefsActivity.class);
 		startActivity(settingsActivity);
 	}
-	
+
 	@Override
 	protected void onPause() {
 		super.onPause();
 		saveFile(currentFilename);
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		saveFile(currentFilename);
 	}
-	
+
 	protected void saveFile(String filename) {
 		FileOutputStream fos = null;
 
@@ -136,9 +148,8 @@ public class AndroidZenWriterActivity extends Activity {
 			fos.write(content.getBytes());
 		} catch (IOException e) {
 			Log.e("SaveFile", "Failed to save file: ", e);
-		}
-		finally {
-			if(fos != null) {
+		} finally {
+			if (fos != null) {
 				try {
 					fos.close();
 				} catch (IOException e) {
@@ -153,27 +164,26 @@ public class AndroidZenWriterActivity extends Activity {
 		BufferedReader br = null;
 		File file = getFileStreamPath(filename);
 		StringBuilder content = new StringBuilder();
-		if(file.exists()) {
+		if (file.exists()) {
 			EditText editText = (EditText) findViewById(R.id.editText1);
 			try {
 				fis = openFileInput(filename);
 				br = new BufferedReader(new InputStreamReader(fis));
-				while(br.ready()) {
+				while (br.ready()) {
 					content.append(br.readLine()).append("\n");
 				}
 				editText.setText(content.toString());
-				
+
 			} catch (IOException e) {
 				Log.e("SaveFile", "Failed to save file: ", e);
-			}
-			finally {
-				if(br != null) {
+			} finally {
+				if (br != null) {
 					try {
 						br.close();
 					} catch (IOException e) {
 					}
 				}
-				if(fis != null) {
+				if (fis != null) {
 					try {
 						fis.close();
 					} catch (IOException e) {
@@ -181,8 +191,7 @@ public class AndroidZenWriterActivity extends Activity {
 				}
 			}
 		}
-		
+
 	}
 
-	
 }
