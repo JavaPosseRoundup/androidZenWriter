@@ -1,18 +1,21 @@
 package com.javaposse.android.zenwriter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class ZenAdapter extends PagerAdapter {
 
-  private Context context;
+  private Activity context;
   
-  public ZenAdapter(Context context) {
+  
+  public ZenAdapter(Activity context) {
     super();
     this.context = context;
   }
@@ -25,14 +28,19 @@ public class ZenAdapter extends PagerAdapter {
   @Override
   public Object instantiateItem(ViewGroup container, int position) {
     View view;
-    
+    LayoutInflater inflater = 
+        (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
     switch (position) {
 
     case 1:
-      LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
       view = inflater.inflate(R.layout.editview, null);
       break;
     case 0:
+        view = inflater.inflate(R.layout.thememanager, null);
+        Button btn = (Button) view.findViewById(R.id.SelectBackgroundButton);
+        btn.setOnClickListener(new SelectImageListener(context));
+        break;
     case 2:
     default:
       TextView textView = new TextView(context);
