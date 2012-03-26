@@ -3,21 +3,22 @@
     android:id="@+id/Top"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:padding="40dp"
     android:background="@drawable/walloffog"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:padding="40dp" >
 
     <ScrollView
         android:id="@+id/ScrollView1"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="fill_parent"
+        android:background="#b0ffffff" >
 
         <EditText
             android:id="@+id/editText1"
-            android:background="#b0ffffff"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
+            android:background="@null"
             android:ems="10"
             android:gravity="top"
             android:inputType="textMultiLine"
