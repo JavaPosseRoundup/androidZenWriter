@@ -4,4 +4,17 @@
     <string name="hello">Booyah!</string>
     <string name="app_name">AndroidZenWriter</string>
 
+    <string-array name="fontsizes">
+        <item>Small</item>
+        <item>Medium</item>
+        <item>Large</item>
+    </string-array>
+
+    <string-array name="fontsizevalues">
+        <item>small</item>
+        <item>medium</item>
+        <item>large</item>
+    </string-array>
+        <string name="theme_settings">Theme Settings</string>
+
 </resources>

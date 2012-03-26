@@ -36,12 +36,12 @@ public class ZenAdapter extends PagerAdapter {
     case 1:
       view = inflater.inflate(R.layout.editview, null);
       break;
-    case 0:
+    case 2:
         view = inflater.inflate(R.layout.thememanager, null);
         Button btn = (Button) view.findViewById(R.id.SelectBackgroundButton);
         btn.setOnClickListener(new SelectImageListener(context));
         break;
-    case 2:
+    case 0:
     default:
       TextView textView = new TextView(context);
       textView.setText("" + position);
@@ -55,8 +55,7 @@ public class ZenAdapter extends PagerAdapter {
 
     return view;
   }
-  
- 
+
   @Override
   public void destroyItem(ViewGroup container, int position, Object object) {
     container.removeView((View) object);
