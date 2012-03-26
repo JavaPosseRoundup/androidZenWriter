@@ -11,5 +11,11 @@
         android:layout_centerVertical="true"
         android:onClick="openThemeSettings"
         android:text="@string/theme_settings" />
+    
+        <Button android:id="@+id/SelectBackgroundButton"
+        android:text="Select Background Image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+       />
 
 </RelativeLayout>
