@@ -1,10 +1,13 @@
 package com.javaposse.android.zenwriter;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.channels.FileChannel;
-
-import dalvik.system.VMRuntime;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -19,9 +22,12 @@ import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 public class AndroidZenWriterActivity extends Activity {
+	
+	public static String currentFilename = "current.txt";
 
 	public static final int SELECT_PHOTO = 100;
 
@@ -34,7 +40,7 @@ public class AndroidZenWriterActivity extends Activity {
 		pager.setAdapter(new ZenAdapter(this));
 		pager.setCurrentItem(1, true);
 	}
-
+	
 	protected void onActivityResult(int requestCode, int resultCode,
 			Intent imageReturnedIntent) {
 		super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
@@ -107,5 +113,76 @@ public class AndroidZenWriterActivity extends Activity {
 		Intent settingsActivity = new Intent(this, PrefsActivity.class);
 		startActivity(settingsActivity);
 	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		saveFile(currentFilename);
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		saveFile(currentFilename);
+	}
+	
+	protected void saveFile(String filename) {
+		FileOutputStream fos = null;
 
+		EditText editText = (EditText) findViewById(R.id.editText1);
+		String content = editText.getText().toString();
+		try {
+			fos = openFileOutput(filename, MODE_PRIVATE);
+			fos.write(content.getBytes());
+		} catch (IOException e) {
+			Log.e("SaveFile", "Failed to save file: ", e);
+		}
+		finally {
+			if(fos != null) {
+				try {
+					fos.close();
+				} catch (IOException e) {
+				}
+			}
+		}
+		Toast.makeText(this, "Saved file", Toast.LENGTH_LONG).show();
+	}
+
+	protected void loadFile(String filename) {
+		FileInputStream fis = null;
+		BufferedReader br = null;
+		File file = getFileStreamPath(filename);
+		StringBuilder content = new StringBuilder();
+		if(file.exists()) {
+			EditText editText = (EditText) findViewById(R.id.editText1);
+			try {
+				fis = openFileInput(filename);
+				br = new BufferedReader(new InputStreamReader(fis));
+				while(br.ready()) {
+					content.append(br.readLine()).append("\n");
+				}
+				editText.setText(content.toString());
+				
+			} catch (IOException e) {
+				Log.e("SaveFile", "Failed to save file: ", e);
+			}
+			finally {
+				if(br != null) {
+					try {
+						br.close();
+					} catch (IOException e) {
+					}
+				}
+				if(fis != null) {
+					try {
+						fis.close();
+					} catch (IOException e) {
+					}
+				}
+			}
+		}
+		
+	}
+
+	
 }

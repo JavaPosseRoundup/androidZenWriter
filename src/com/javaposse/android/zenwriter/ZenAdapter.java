@@ -15,9 +15,9 @@ import android.widget.TextView;
 
 public class ZenAdapter extends PagerAdapter {
 
-  private Activity context;
+  private AndroidZenWriterActivity context;
 
-  public ZenAdapter(Activity context) {
+  public ZenAdapter(AndroidZenWriterActivity context) {
     super();
     this.context = context;
   }
@@ -55,6 +55,10 @@ public class ZenAdapter extends PagerAdapter {
 
     container.addView(view);
 
+    if(position == 1) {
+    	context.loadFile(AndroidZenWriterActivity.currentFilename);
+    }
+    
     if (position == 2) {
       // initialize the gallery
       Gallery gallery = (Gallery) context.findViewById(R.id.themegallery);
