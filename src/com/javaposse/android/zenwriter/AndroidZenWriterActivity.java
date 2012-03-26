@@ -1,7 +1,11 @@
 package com.javaposse.android.zenwriter;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -33,11 +37,15 @@ public class AndroidZenWriterActivity extends Activity {
 
 				Log.i("SelectedImage", selectedImage.toString());
 				View top = findViewById(R.id.Top);
-				/*
-				 * InputStream imageStream =
-				 * getContentResolver().openInputStream(selectedImage); Bitmap
-				 * yourSelectedImage = BitmapFactory.decodeStream(imageStream);
-				 */
+				try {
+					InputStream imageStream = getContentResolver().openInputStream(selectedImage);
+					Drawable newBackground = Drawable.createFromStream(imageStream, "Background Image");
+					top.setBackgroundDrawable(newBackground);
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 			}
 		}
 	}
