@@ -24,6 +24,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -242,14 +243,31 @@ public class AndroidZenWriterActivity extends SherlockActivity {
         return true;
     }
     
+    boolean actionBarVisible = false;
     
-    public void toggleTheme(View view) {
-        CheckBox cb = (CheckBox) view;
-        if(cb.isChecked()) {
+    public void toggleTheme() {
+        if(!actionBarVisible) {
             this.getSupportActionBar().show();
         }
         else {
             this.getSupportActionBar().hide();
         }
+        actionBarVisible = !actionBarVisible;
     }
+    
+    
+    
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        boolean ret = super.onTouchEvent(event);
+        
+        if(event.getAction() == MotionEvent.ACTION_UP) {
+            toggleTheme();
+        }
+        
+        return ret;
+        
+    }
+    
+    
 }
