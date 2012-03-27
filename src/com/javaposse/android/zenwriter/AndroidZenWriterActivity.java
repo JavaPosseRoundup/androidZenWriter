@@ -9,6 +9,8 @@ import java.io.InputStreamReader;
 
 import android.app.Activity;
 import android.content.Context;
+import com.actionbarsherlock.app.SherlockActivity;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -24,16 +26,20 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class AndroidZenWriterActivity extends Activity {
+public class AndroidZenWriterActivity extends SherlockActivity {
 
 	public static String currentFilename = "current.txt";
 	public static String settingsFilename = "settings.properties";
 
 	public static final int SELECT_PHOTO = 100;
+	private static final boolean ACTIONBAR = false;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+	        if (ACTIONBAR) {
+	            setTheme(R.style.Theme_Sherlock_Light);
+	        }
 		super.onCreate(savedInstanceState);
 		//loadSettings();
 		setContentView(R.layout.main);
@@ -232,4 +238,23 @@ public class AndroidZenWriterActivity extends Activity {
 	
 	
 
+    // Action Bar
+    @Override
+    public boolean onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu) {
+        if (!ACTIONBAR) {
+            return false;
+        }
+	menu.add("Edit").setIcon(android.R.drawable.ic_menu_edit)
+		.setShowAsAction(com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+	menu.add("Search").setIcon(android.R.drawable.ic_menu_search)
+		.setShowAsAction(com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+	menu.add("Save").setIcon(android.R.drawable.ic_menu_save)
+		.setShowAsAction(com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+	menu.add("Share").setIcon(android.R.drawable.ic_menu_share)
+		.setShowAsAction(com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_IF_ROOM);
+	return true;
+    }
 }
