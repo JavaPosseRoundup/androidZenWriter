@@ -8,7 +8,8 @@
         android:title="Display" >
         <Preference
             android:key="backgroundpref"
-            android:title="Background Image" />
+            android:title="Background Image"
+         />
 
         <EditTextPreference
             android:key="marginpref"

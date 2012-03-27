@@ -40,9 +40,6 @@ public class ZenAdapter extends PagerAdapter {
 			break;
 		case 2:
 			view = inflater.inflate(R.layout.thememanager, null);
-			Button btn = (Button) view
-					.findViewById(R.id.SelectBackgroundButton);
-			btn.setOnClickListener(new SelectImageListener(context));
 			break;
 		case 0:
 		default:
