@@ -4,10 +4,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.channels.FileChannel;
+import java.util.Date;
+import java.util.Properties;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,6 +16,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -28,6 +30,9 @@ import android.widget.Toast;
 public class AndroidZenWriterActivity extends Activity {
 
 	public static String currentFilename = "current.txt";
+	public static String settingsFilename = "settings.properties";
+
+	Properties settings = new Properties();
 
 	public static final int SELECT_PHOTO = 100;
 
@@ -35,10 +40,18 @@ public class AndroidZenWriterActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		loadSettings();
 		setContentView(R.layout.main);
 		ViewPager pager = (ViewPager) findViewById(R.id.ViewPager1);
 		pager.setAdapter(new ZenAdapter(this));
 		pager.setCurrentItem(1, true);
+		View top = findViewById(R.id.Top);
+		if(settings.containsKey("backgroundImage")) {
+		    Drawable background = getDrawable(settings.getProperty("backgroundImage"));
+		    if(background != null) {
+			top.setBackgroundDrawable(background);
+		    }
+		}
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode,
@@ -88,24 +101,12 @@ public class AndroidZenWriterActivity extends Activity {
 					Log.e("SelectedImage", "Failed to Copy Image", e);
 				}
 
-				BitmapFactory.Options opts = new BitmapFactory.Options();
-				DisplayMetrics metrics = new DisplayMetrics();
-				getWindowManager().getDefaultDisplay().getMetrics(metrics);
-				Log.i("SelectedImage", "DensityDPI: " + metrics.densityDpi);
-				Log.i("SelectedImage", "Density: " + metrics.density);
-				opts.inTargetDensity = metrics.densityDpi;
-				opts.inSampleSize = 2;
-				Bitmap backgroundBitmap = BitmapFactory.decodeFile(
-						selectedImageFile.getAbsolutePath(), opts);
-
-				if (backgroundBitmap != null) {
-					BitmapDrawable drawable = new BitmapDrawable(
-							backgroundBitmap);
+				Drawable drawable = getDrawable(selectedImageFile.getName());
+				if (drawable != null) {
 					top.setBackgroundDrawable(drawable);
+					settings.put("backgroundImage", selectedImageFile.getName());
+					saveSettings();
 				}
-				// Drawable d =
-				// Drawable.createFromPath(selectedImageFile.getAbsolutePath());
-				// top.setBackgroundDrawable(d);
 
 			}
 		}
@@ -135,6 +136,7 @@ public class AndroidZenWriterActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		saveSettings();
 		saveFile(currentFilename);
 	}
 
@@ -192,6 +194,66 @@ public class AndroidZenWriterActivity extends Activity {
 				}
 			}
 		}
+
+	}
+
+	public void saveSettings() {
+		FileOutputStream fos = null;
+
+		try {
+			fos = openFileOutput(settingsFilename, MODE_PRIVATE);
+			settings.save(fos, "Settings saved at: " + new Date());
+		} catch (IOException e) {
+			Log.e("SaveFile", "Failed to save file: ", e);
+		} finally {
+			if (fos != null) {
+				try {
+					fos.close();
+				} catch (IOException e) {
+				}
+			}
+		}
+		Toast.makeText(this, "Saved settings", Toast.LENGTH_LONG).show();
+	}
+
+	public void loadSettings() {
+		FileInputStream fis = null;
+
+		File settingsFile = getFileStreamPath(settingsFilename);
+		if (settingsFile.exists()) {
+			try {
+				fis = openFileInput(settingsFilename);
+				settings.load(fis);
+			} catch (IOException e) {
+				Log.e("SaveFile", "Failed to save file: ", e);
+			} finally {
+				if (fis != null) {
+					try {
+						fis.close();
+					} catch (IOException e) {
+					}
+				}
+			}
+		}
+		Toast.makeText(this, "Loaded settings", Toast.LENGTH_LONG).show();
+	}
+
+	public Drawable getDrawable(String filename) {
+
+		BitmapFactory.Options opts = new BitmapFactory.Options();
+		DisplayMetrics metrics = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		opts.inTargetDensity = metrics.densityDpi;
+		opts.inSampleSize = 2;
+		Bitmap backgroundBitmap = BitmapFactory.decodeFile(
+				getFileStreamPath(filename).getAbsolutePath(), opts);
+
+		if (backgroundBitmap != null) {
+			BitmapDrawable drawable = new BitmapDrawable(backgroundBitmap);
+			return drawable;
+
+		}
+		return null;
 
 	}
 
