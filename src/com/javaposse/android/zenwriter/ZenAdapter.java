@@ -4,11 +4,13 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.view.PagerAdapter;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
@@ -68,6 +70,13 @@ public class ZenAdapter extends PagerAdapter {
                 }
             };
             editor.setOnCreateContextMenuListener(editorOnContextMenuCreateListener);
+            editor.setOnTouchListener(new OnTouchListener() {
+                
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    return context.onTouchEvent(event);
+                }
+            });
         }
 
         if (position == 2) {
