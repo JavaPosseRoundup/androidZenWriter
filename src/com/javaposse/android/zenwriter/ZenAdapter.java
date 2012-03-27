@@ -1,6 +1,5 @@
 package com.javaposse.android.zenwriter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.view.PagerAdapter;
@@ -12,7 +11,6 @@ import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Gallery;
 import android.widget.TextView;
