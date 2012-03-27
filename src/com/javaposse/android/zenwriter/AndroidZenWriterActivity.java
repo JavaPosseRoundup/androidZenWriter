@@ -60,7 +60,7 @@ public class AndroidZenWriterActivity extends Activity {
 		EditText editText = (EditText) findViewById(R.id.editText1);
 		String content = editText.getText().toString();
 
-		sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Writerly Genius");
+		sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "TODO NEED Subject!!!");
 		sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, content);
 		
 		startActivity(Intent.createChooser(sharingIntent, "Share via"));
