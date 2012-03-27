@@ -127,6 +127,19 @@ public class AndroidZenWriterActivity extends Activity {
 		startActivity(settingsActivity);
 	}
 
+	public void shareStuff(View parent) {
+		Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+		sharingIntent.setType("text/plain");
+		
+		EditText editText = (EditText) findViewById(R.id.editText1);
+		String content = editText.getText().toString();
+
+		sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Writerly Genius");
+		sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, content);
+		
+		startActivity(Intent.createChooser(sharingIntent, "Share via"));
+	}
+	
 	@Override
 	protected void onPause() {
 		super.onPause();
