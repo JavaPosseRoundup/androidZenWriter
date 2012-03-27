@@ -9,6 +9,8 @@ import java.io.InputStreamReader;
 
 import android.app.Activity;
 import android.content.Context;
+
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
 
 import android.content.Intent;
@@ -23,6 +25,7 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -36,7 +39,8 @@ public class AndroidZenWriterActivity extends SherlockActivity {
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.Theme_Sherlock_Light_NoActionBar);
+        setTheme(R.style.Theme_Sherlock_Light);
+        getSupportActionBar().hide();
         super.onCreate(savedInstanceState);
         // loadSettings();
         setContentView(R.layout.main);
@@ -236,5 +240,16 @@ public class AndroidZenWriterActivity extends SherlockActivity {
                 .setShowAsAction(
                         com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_IF_ROOM);
         return true;
+    }
+    
+    
+    public void toggleTheme(View view) {
+        CheckBox cb = (CheckBox) view;
+        if(cb.isChecked()) {
+            this.getSupportActionBar().show();
+        }
+        else {
+            this.getSupportActionBar().hide();
+        }
     }
 }
