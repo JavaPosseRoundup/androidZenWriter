@@ -221,7 +221,6 @@ public class AndroidZenWriterActivity extends Activity {
 	
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-	    // TODO Auto-generated method stub
 	    super.onContextItemSelected(item);
 	    
 	    if(item.getItemId() == SHARE_CONTEXT_MENU_ITEMID) {
@@ -230,5 +229,7 @@ public class AndroidZenWriterActivity extends Activity {
 	    
 	    return true;
 	}
+	
+	
 
 }
