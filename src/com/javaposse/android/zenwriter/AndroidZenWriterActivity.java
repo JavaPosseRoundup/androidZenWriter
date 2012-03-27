@@ -6,9 +6,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Date;
-import java.util.Map;
-import java.util.Properties;
 
 import android.app.Activity;
 import android.content.Context;
@@ -21,8 +18,11 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
-import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -45,6 +45,7 @@ public class AndroidZenWriterActivity extends Activity {
 		pager.setCurrentItem(1, true);
 		
         applyPreferences();
+        
 		
 	}
 
@@ -55,7 +56,7 @@ public class AndroidZenWriterActivity extends Activity {
 		startActivityForResult(settingsActivity, EDIT_PREFERENCES);
 	}
 
-	public void shareStuff(View parent) {
+	public void shareStuff() {
 		Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
 		sharingIntent.setType("text/plain");
 		
@@ -217,6 +218,20 @@ public class AndroidZenWriterActivity extends Activity {
 		}
 		return null;
 
+	}
+	
+	public static final int SHARE_CONTEXT_MENU_ITEMID = 100;
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+	    // TODO Auto-generated method stub
+	    super.onContextItemSelected(item);
+	    
+	    if(item.getItemId() == SHARE_CONTEXT_MENU_ITEMID) {
+	        shareStuff();
+	    }
+	    
+	    return true;
 	}
 
 }

@@ -4,12 +4,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.view.PagerAdapter;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Gallery;
 import android.widget.TextView;
 
@@ -55,6 +59,14 @@ public class ZenAdapter extends PagerAdapter {
 
 		if (position == 1) {
 			context.loadFile(AndroidZenWriterActivity.currentFilename);
+			EditText editor = (EditText) view.findViewById(R.id.editText1);
+	        View.OnCreateContextMenuListener editorOnContextMenuCreateListener = new View.OnCreateContextMenuListener() {
+
+	            public void onCreateContextMenu(ContextMenu menu, View view, ContextMenuInfo menuInfo) {
+	                menu.add(Menu.NONE, AndroidZenWriterActivity.SHARE_CONTEXT_MENU_ITEMID, Menu.NONE, "Share");
+	            }
+	        };
+	        editor.setOnCreateContextMenuListener(editorOnContextMenuCreateListener);
 		}
 
 		if (position == 2) {

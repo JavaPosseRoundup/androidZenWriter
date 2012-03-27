@@ -8,7 +8,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/SelectBackgroundButton"
         android:onClick="openThemeSettings"
         android:text="@string/theme_settings" />
 
@@ -19,14 +18,5 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="82dp" />
-
-    <Button
-        android:id="@+id/sharebtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/themeprefsbutton"
-        android:onClick="shareStuff"
-        android:text="@string/share_btn" />
 
 </RelativeLayout>
