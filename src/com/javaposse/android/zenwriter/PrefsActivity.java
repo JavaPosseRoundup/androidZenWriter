@@ -3,7 +3,6 @@ package com.javaposse.android.zenwriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.channels.FileChannel;
-import java.util.Map;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,7 +23,6 @@ public class PrefsActivity extends PreferenceActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.zenpreferences);
 		Preference backgroundPref = this.findPreference("backgroundpref");
@@ -37,10 +35,6 @@ public class PrefsActivity extends PreferenceActivity {
 					}
 				});
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        Map<String, Object> prefValues = (Map<String, Object>) prefs.getAll();
-        for(Map.Entry<String, Object> e : prefValues.entrySet()) {
-            Log.i("PrefsActivity:OnCreate", "Pref: " + e.getKey() + " = " + e.getValue());
-        }
         backgroundPref.setSummary(prefs.getString("backgroundpref", ""));
 	}
 
