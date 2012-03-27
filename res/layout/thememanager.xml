@@ -11,15 +11,6 @@
         android:layout_alignParentRight="true"
         android:text="@string/select_background_image" />
 
-    <Gallery
-        android:id="@+id/themegallery"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/SelectBackgroundButton"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true" />
-
     <Button
         android:id="@+id/themeprefsbutton"
         android:layout_width="wrap_content"
@@ -28,5 +19,13 @@
         android:layout_toLeftOf="@+id/SelectBackgroundButton"
         android:onClick="openThemeSettings"
         android:text="@string/theme_settings" />
+
+    <Gallery
+        android:id="@+id/themegallery"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="165dp" />
 
 </RelativeLayout>
