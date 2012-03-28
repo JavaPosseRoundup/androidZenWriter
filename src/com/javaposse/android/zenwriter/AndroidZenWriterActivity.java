@@ -271,8 +271,7 @@ public class AndroidZenWriterActivity extends SherlockActivity {
 
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inSampleSize = 2;
-        Bitmap backgroundBitmap = BitmapFactory.decodeFile(context
-                .getFileStreamPath(filename).getAbsolutePath(), opts);
+        Bitmap backgroundBitmap = BitmapFactory.decodeFile(filename, opts);
 
         if (backgroundBitmap != null) {
             BitmapDrawable drawable = new BitmapDrawable(backgroundBitmap);
