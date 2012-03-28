@@ -60,7 +60,7 @@ public class ZenAdapter extends PagerAdapter {
         if (position == 1) {
             EditText editor = (EditText) view.findViewById(R.id.editText1);
             if(context.sharedContents != null && context.sharedContents != "")
-                editor.setText(context.sharedContents);
+                context.createNote(context.sharedContents);
             else
                 context.loadFile(context.currentNote.filename);
 

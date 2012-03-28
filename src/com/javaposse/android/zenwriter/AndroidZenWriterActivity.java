@@ -414,7 +414,7 @@ public class AndroidZenWriterActivity extends SherlockActivity {
 
             alert.show();
         } else if (itemId == ACTION_NEW) {
-            createNote();
+            createNote(null);
         }
         else if (itemId == ACTION_LIST) {
             if(currentNote.name.length() == 0) {
@@ -471,7 +471,7 @@ public class AndroidZenWriterActivity extends SherlockActivity {
                                 switchToNote(Math.max(0,index - 1));
                             }
                             else {
-                                createNote();
+                                createNote(null);
                             }
                         }
                     });
@@ -490,11 +490,11 @@ public class AndroidZenWriterActivity extends SherlockActivity {
         return ret;
     }
 
-    private void createNote() {
+    public void createNote(String contents) {
         currentNote = new Note();
         notes.add(currentNote);
         EditText editor = (EditText) findViewById(R.id.editText1);
-        editor.setText("");
+        editor.setText(contents != null ? contents : "");
     }
 
     boolean actionBarVisible = false;
