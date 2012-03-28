@@ -86,8 +86,8 @@ public class AndroidZenWriterActivity extends SherlockActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        saveSettings();
-        saveFile(currentNote.filename);
+        //saveSettings();
+        //saveFile(currentNote.filename);
     }
 
     @Override
