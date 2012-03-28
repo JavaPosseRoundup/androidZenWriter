@@ -3,7 +3,6 @@ package com.javaposse.android.zenwriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.channels.FileChannel;
-import java.util.Map;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,114 +19,112 @@ import android.widget.Toast;
 
 public class PrefsActivity extends PreferenceActivity {
 
-	public static final int SELECT_PHOTO = 100;
+    public static final int SELECT_PHOTO = 100;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		super.onCreate(savedInstanceState);
-		addPreferencesFromResource(R.xml.zenpreferences);
-		Preference backgroundPref = this.findPreference("backgroundpref");
-		final PrefsActivity THIS = this;
-		backgroundPref
-				.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-					@Override
-					public boolean onPreferenceClick(Preference preference) {
-						return THIS.selectBackgroundImage(preference);
-					}
-				});
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        Map<String, Object> prefValues = (Map<String, Object>) prefs.getAll();
-        for(Map.Entry<String, Object> e : prefValues.entrySet()) {
-            Log.i("PrefsActivity:OnCreate", "Pref: " + e.getKey() + " = " + e.getValue());
-        }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        addPreferencesFromResource(R.xml.zenpreferences);
+        Preference backgroundPref = this.findPreference("backgroundpref");
+        final PrefsActivity THIS = this;
+        backgroundPref
+                .setOnPreferenceClickListener(new OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        return THIS.selectBackgroundImage(preference);
+                    }
+                });
+        SharedPreferences prefs = PreferenceManager
+                .getDefaultSharedPreferences(this);
         backgroundPref.setSummary(prefs.getString("backgroundpref", ""));
-	}
+    }
 
-	public boolean selectBackgroundImage(Preference pref) {
-		Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-		photoPickerIntent.setType("image/*");
-		this.startActivityForResult(photoPickerIntent,
-				AndroidZenWriterActivity.SELECT_PHOTO);
-		return true;
-	}
+    public boolean selectBackgroundImage(Preference pref) {
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        this.startActivityForResult(photoPickerIntent,
+                AndroidZenWriterActivity.SELECT_PHOTO);
+        return true;
+    }
 
-	protected void onActivityResult(int requestCode, int resultCode,
-			Intent imageReturnedIntent) {
-		super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+    protected void onActivityResult(int requestCode, int resultCode,
+            Intent imageReturnedIntent) {
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
 
-		switch (requestCode) {
-		case SELECT_PHOTO:
-			if (resultCode == RESULT_OK) {
-				Uri selectedImage = imageReturnedIntent.getData();
+        switch (requestCode) {
+        case SELECT_PHOTO:
+            if (resultCode == RESULT_OK) {
+                Uri selectedImage = imageReturnedIntent.getData();
 
-				Log.i("SelectedImage", selectedImage.toString());
-				String path = getPath(selectedImage);
-				Log.i("SelectedImage", "File Path: " + path);
-				File selectedImageFile = new File(path);
+                Log.i("SelectedImage", selectedImage.toString());
+                String path = getPath(selectedImage);
+                Log.i("SelectedImage", "File Path: " + path);
+                File selectedImageFile = new File(path);
 
-				try {
+                try {
 
-					File destFile = getFileStreamPath(selectedImageFile
-							.getName());
+                    File destFile = getFileStreamPath(selectedImageFile
+                            .getName());
 
-					if (!destFile.exists() && selectedImageFile.exists()) {
-						Log.i("SelectedImage", "Copying file: "
-								+ selectedImageFile.getAbsolutePath());
+                    if (!destFile.exists() && selectedImageFile.exists()) {
+                        Log.i("SelectedImage", "Copying file: "
+                                + selectedImageFile.getAbsolutePath());
 
-	                    Toast.makeText(this,
-	                            "Copying image: " + selectedImageFile.getName(),
-	                            Toast.LENGTH_LONG).show();
-						FileChannel src = new FileInputStream(selectedImageFile)
-								.getChannel();
-						FileChannel dst = openFileOutput(
-								selectedImageFile.getName(), MODE_PRIVATE)
-								.getChannel();
-						dst.transferFrom(src, 0, src.size());
-						src.close();
-						dst.close();
-						Log.i("SelectedImage", "Copy Complete!");
-						Log.i("SelectedImage",
-								"Destination File: "
-										+ destFile.getAbsolutePath());
-					} else {
-						Log.i("SelectedImage",
-								"The file was already in our private storage: "
-										+ destFile.getAbsolutePath());
-					}
-					Toast.makeText(this,
-							"Copied image: " + selectedImageFile.getName(),
-							Toast.LENGTH_LONG).show();
-				} catch (Exception e) {
-					Log.e("SelectedImage", "Failed to Copy Image", e);
-				}
+                        Toast.makeText(
+                                this,
+                                "Copying image: " + selectedImageFile.getName(),
+                                Toast.LENGTH_LONG).show();
+                        FileChannel src = new FileInputStream(selectedImageFile)
+                                .getChannel();
+                        FileChannel dst = openFileOutput(
+                                selectedImageFile.getName(), MODE_PRIVATE)
+                                .getChannel();
+                        dst.transferFrom(src, 0, src.size());
+                        src.close();
+                        dst.close();
+                        Log.i("SelectedImage", "Copy Complete!");
+                        Log.i("SelectedImage",
+                                "Destination File: "
+                                        + destFile.getAbsolutePath());
+                    } else {
+                        Log.i("SelectedImage",
+                                "The file was already in our private storage: "
+                                        + destFile.getAbsolutePath());
+                    }
+                    Toast.makeText(this,
+                            "Copied image: " + selectedImageFile.getName(),
+                            Toast.LENGTH_LONG).show();
+                } catch (Exception e) {
+                    Log.e("SelectedImage", "Failed to Copy Image", e);
+                }
 
-		        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-				SharedPreferences.Editor editor = prefs.edit();
-				editor.putString("backgroundpref", selectedImageFile.getName());
-				editor.commit();
-		        Preference backgroundPref = this.findPreference("backgroundpref");
-		        backgroundPref.setSummary(selectedImageFile.getName());
-			}
-		}
-	}
+                SharedPreferences prefs = PreferenceManager
+                        .getDefaultSharedPreferences(this);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("backgroundpref", selectedImageFile.getName());
+                editor.commit();
+                Preference backgroundPref = this
+                        .findPreference("backgroundpref");
+                backgroundPref.setSummary(selectedImageFile.getName());
+            }
+        }
+    }
 
-	public String getPath(Uri uri) {
-		String[] projection = { MediaStore.Images.Media.DATA };
-		Cursor cursor = managedQuery(uri, projection, null, null, null);
-		startManagingCursor(cursor);
-		int column_index = cursor
-				.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-		cursor.moveToFirst();
-		return cursor.getString(column_index);
-	}
+    public String getPath(Uri uri) {
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = managedQuery(uri, projection, null, null, null);
+        startManagingCursor(cursor);
+        int column_index = cursor
+                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
 
-	
-	@Override
-	protected void onPause() {
-	    super.onPause();
-	    Log.i("PrefsActivity", "Paused, setting result.");
-	    setResult(RESULT_OK);
-	}
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i("PrefsActivity", "Paused, setting result.");
+        setResult(RESULT_OK);
+    }
 
 }
