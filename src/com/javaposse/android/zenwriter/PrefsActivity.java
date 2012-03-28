@@ -36,7 +36,9 @@ public class PrefsActivity extends PreferenceActivity {
                 });
         SharedPreferences prefs = PreferenceManager
                 .getDefaultSharedPreferences(this);
-        backgroundPref.setSummary(prefs.getString("backgroundpref", ""));
+        if(prefs.getString("backgroundpref", "").length() > 0) {
+            backgroundPref.setSummary(new File(prefs.getString("backgroundpref", "")).getName());
+        }
     }
 
     public boolean selectBackgroundImage(Preference pref) {
@@ -60,7 +62,7 @@ public class PrefsActivity extends PreferenceActivity {
                 String path = getPath(selectedImage);
                 Log.i("SelectedImage", "File Path: " + path);
                 File selectedImageFile = new File(path);
-
+/*
                 try {
 
                     File destFile = getFileStreamPath(selectedImageFile
@@ -97,11 +99,12 @@ public class PrefsActivity extends PreferenceActivity {
                 } catch (Exception e) {
                     Log.e("SelectedImage", "Failed to Copy Image", e);
                 }
+                */
 
                 SharedPreferences prefs = PreferenceManager
                         .getDefaultSharedPreferences(this);
                 SharedPreferences.Editor editor = prefs.edit();
-                editor.putString("backgroundpref", selectedImageFile.getName());
+                editor.putString("backgroundpref", selectedImageFile.getAbsolutePath());
                 editor.commit();
                 Preference backgroundPref = this
                         .findPreference("backgroundpref");

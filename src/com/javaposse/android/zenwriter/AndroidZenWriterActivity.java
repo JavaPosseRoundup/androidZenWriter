@@ -282,8 +282,7 @@ public class AndroidZenWriterActivity extends SherlockActivity {
 
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inSampleSize = 2;
-        Bitmap backgroundBitmap = BitmapFactory.decodeFile(context
-                .getFileStreamPath(filename).getAbsolutePath(), opts);
+        Bitmap backgroundBitmap = BitmapFactory.decodeFile(filename, opts);
 
         if (backgroundBitmap != null) {
             BitmapDrawable drawable = new BitmapDrawable(backgroundBitmap);
@@ -314,6 +313,7 @@ public class AndroidZenWriterActivity extends SherlockActivity {
     public static final int ACTION_SAVE = 5;
     public static final int ACTION_SHARE = 6;
     public static final int ACTION_DELETE = 7;
+    public static final int ACTION_SETTINGS = 8;
 
     // Action Bar
     @Override
@@ -358,6 +358,13 @@ public class AndroidZenWriterActivity extends SherlockActivity {
                         com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_ALWAYS);
         
 
+        menu.add(com.actionbarsherlock.view.Menu.NONE, ACTION_SETTINGS,
+                ACTION_SETTINGS, "Settings")
+                .setIcon(android.R.drawable.ic_menu_preferences)
+                .setShowAsAction(
+                        com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        
+
         return true;
     }
 
@@ -375,6 +382,8 @@ public class AndroidZenWriterActivity extends SherlockActivity {
             ret = true;
         } else if (itemId == ACTION_SEARCH) {
             // TODO: Implement Search
+        } else if (itemId == ACTION_SETTINGS) {
+            openThemeSettings(null);
         } else if (itemId == ACTION_EDIT) {
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
