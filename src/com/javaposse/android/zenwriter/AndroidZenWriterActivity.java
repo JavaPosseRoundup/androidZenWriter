@@ -97,12 +97,19 @@ public class AndroidZenWriterActivity extends SherlockActivity {
         saveFile(currentNote.filename);
     }
 
+    int defaultNameLength = 30;
+    
     protected void saveFile(String filename) {
         FileOutputStream fos = null;
+        
+        
 
         EditText editText = (EditText) findViewById(R.id.editText1);
         if (editText != null) {
             String content = editText.getText().toString();
+            if(currentNote.name.length() == 0) {
+                currentNote.name = currentNote.getDefaultNameFromContent(content, defaultNameLength);
+            }
             try {
                 fos = openFileOutput(filename, MODE_PRIVATE);
                 fos.write(content.getBytes());
@@ -385,6 +392,11 @@ public class AndroidZenWriterActivity extends SherlockActivity {
             editor.setText("");
         }
         else if (itemId == ACTION_LIST) {
+            if(currentNote.name.length() == 0) {
+                EditText editor = (EditText) findViewById(R.id.editText1);
+                String content = editor.getText().toString();
+                currentNote.name = Note.getDefaultNameFromContent(content, defaultNameLength);
+            }
             final AlertDialog.Builder listDialog = new AlertDialog.Builder(this);
             listDialog.setTitle("Select Active Note");
             ArrayAdapter<Note> adapter = new ArrayAdapter<Note>(this, android.R.layout.simple_list_item_single_choice, notes);

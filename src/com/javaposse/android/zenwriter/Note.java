@@ -50,4 +50,20 @@ public class Note {
             return false;
         }
     }
+
+    public static String getDefaultNameFromContent(String content, int maxChars) {
+        StringBuilder sb = new StringBuilder();
+        if(content != null && content.length() > 0) {
+            String[] words = content.split("\\s+");
+            int i = 0;
+            while(sb.length() < maxChars && i < words.length) {
+                sb.append(words[i++]).append(" ");
+            }
+            String name = sb.substring(0, Math.min(maxChars, sb.length()));
+            return name;
+        }
+        else {
+            return "";
+        }
+    }
 }
