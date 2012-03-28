@@ -27,11 +27,14 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.SubMenu;
 
 public class AndroidZenWriterActivity extends SherlockActivity {
 
@@ -297,8 +300,6 @@ public class AndroidZenWriterActivity extends SherlockActivity {
     @Override
     public boolean onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu) {
 
-        //SubMenu sub = menu.addSubMenu("Sub");
-        
         menu.add(com.actionbarsherlock.view.Menu.NONE, ACTION_NEW, ACTION_NEW,
                 "New Note")
                 .setIcon(android.R.drawable.ic_menu_add)
@@ -383,6 +384,34 @@ public class AndroidZenWriterActivity extends SherlockActivity {
             EditText editor = (EditText) findViewById(R.id.editText1);
             editor.setText("");
         }
+        else if (itemId == ACTION_LIST) {
+            final AlertDialog.Builder listDialog = new AlertDialog.Builder(this);
+            listDialog.setTitle("Select Active Note");
+            ArrayAdapter<Note> adapter = new ArrayAdapter<Note>(this, android.R.layout.simple_list_item_single_choice, notes);
+            listDialog.setPositiveButton("Ok",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,
+                                int whichButton) {
+                            dialog.dismiss();
+                            switchToNote((Integer) ((AlertDialog)dialog).getListView().getTag());
+                        }
+                    });
+            listDialog.setNegativeButton("Cancel",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,
+                                int whichButton) {
+                            // Canceled.
+                        }
+                    });
+            listDialog.setSingleChoiceItems(adapter, adapter.getPosition(currentNote), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    ListView lv = ((AlertDialog)dialog).getListView();
+                    lv.setTag(new Integer(which));
+                }
+            });
+            listDialog.show();
+            
+        }
 
         return ret;
     }
@@ -408,6 +437,13 @@ public class AndroidZenWriterActivity extends SherlockActivity {
 
         return ret;
 
+    }
+    
+    private void switchToNote(int position) {
+        saveFile(currentNote.filename);
+        saveSettings();
+        currentNote = notes.get(position);
+        loadFile(currentNote.filename);
     }
 
 }

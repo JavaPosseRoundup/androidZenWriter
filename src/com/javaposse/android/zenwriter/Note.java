@@ -27,11 +27,27 @@ public class Note {
     
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("id: ").append(id)
-          .append("name: ").append(name)
-          .append("filename: ").append(filename)
-          .append("lastModified: ").append(lastModified);
-        return sb.toString();
+        if("".equals(name)) {
+            return id;
+        }
+        else {
+            return name;
+        }
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if(o != null) {
+            Note otherN = (Note) o;
+            if(id != null && otherN.id != null) {
+                return otherN.id.equals(id);
+            }
+            else {
+                return id != otherN.id;
+            }
+        }
+        else {
+            return false;
+        }
     }
 }
