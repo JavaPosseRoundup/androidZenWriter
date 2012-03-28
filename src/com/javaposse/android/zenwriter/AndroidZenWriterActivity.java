@@ -34,6 +34,7 @@ public class AndroidZenWriterActivity extends SherlockActivity {
 
     public static String currentFilename = "current.txt";
     public static String settingsFilename = "settings.properties";
+    public String currentName = "";
 
     public static final int SELECT_PHOTO = 100;
 
@@ -218,29 +219,59 @@ public class AndroidZenWriterActivity extends SherlockActivity {
         return true;
     }
 
+    public static final int ACTION_EDIT = 1;
+    public static final int ACTION_SEARCH = 2;
+    public static final int ACTION_SAVE = 3;
+    public static final int ACTION_SHARE = 4;
+    
     // Action Bar
     @Override
     public boolean onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu) {
-        menu.add("Edit")
+        menu.add(com.actionbarsherlock.view.Menu.NONE, ACTION_EDIT, ACTION_EDIT, "Edit")
                 .setIcon(android.R.drawable.ic_menu_edit)
                 .setShowAsAction(
                         com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_ALWAYS);
 
-        menu.add("Search")
+        menu.add(com.actionbarsherlock.view.Menu.NONE, ACTION_SEARCH, ACTION_SEARCH, "Search")
                 .setIcon(android.R.drawable.ic_menu_search)
                 .setShowAsAction(
                         com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_ALWAYS);
 
-        menu.add("Save")
+        menu.add(com.actionbarsherlock.view.Menu.NONE, ACTION_SAVE, ACTION_SAVE, "Save")
                 .setIcon(android.R.drawable.ic_menu_save)
                 .setShowAsAction(
-                        com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                        com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_ALWAYS);
 
-        menu.add("Share")
+        menu.add(com.actionbarsherlock.view.Menu.NONE, ACTION_SHARE, ACTION_SHARE, "Share")
                 .setIcon(android.R.drawable.ic_menu_share)
                 .setShowAsAction(
-                        com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                        com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_ALWAYS);
         return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(
+            com.actionbarsherlock.view.MenuItem item) {
+        boolean ret = super.onOptionsItemSelected(item);
+        int itemId = item.getItemId();
+        if(itemId == ACTION_SAVE) {
+            // TODO: Use currentName + ".txt" as filename
+            saveFile(currentFilename);
+            ret = true;
+        }
+        else if(itemId == ACTION_SHARE) {
+            shareStuff();
+            ret = true;
+        }
+        else if(itemId == ACTION_SEARCH) {
+            // TODO: Implement Search
+        }
+        else if(itemId == ACTION_EDIT) {
+            // TODO: Implement Name Edit.
+            // TODO: currentFilename = currentName + ".txt"
+        }
+        
+        return ret;
     }
     
     boolean actionBarVisible = false;
