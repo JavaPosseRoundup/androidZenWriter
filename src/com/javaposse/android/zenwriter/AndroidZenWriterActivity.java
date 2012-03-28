@@ -302,6 +302,7 @@ public class AndroidZenWriterActivity extends SherlockActivity {
     public static final int ACTION_SEARCH = 4;
     public static final int ACTION_SAVE = 5;
     public static final int ACTION_SHARE = 6;
+    public static final int ACTION_DELETE = 7;
 
     // Action Bar
     @Override
@@ -328,6 +329,13 @@ public class AndroidZenWriterActivity extends SherlockActivity {
         menu.add(com.actionbarsherlock.view.Menu.NONE, ACTION_SHARE,
                 ACTION_SHARE, "Share")
                 .setIcon(android.R.drawable.ic_menu_share)
+                .setShowAsAction(
+                        com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        
+
+        menu.add(com.actionbarsherlock.view.Menu.NONE, ACTION_DELETE,
+                ACTION_DELETE, "Delete Note")
+                .setIcon(android.R.drawable.ic_menu_delete)
                 .setShowAsAction(
                         com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
@@ -386,10 +394,7 @@ public class AndroidZenWriterActivity extends SherlockActivity {
 
             alert.show();
         } else if (itemId == ACTION_NEW) {
-            currentNote = new Note();
-            notes.add(currentNote);
-            EditText editor = (EditText) findViewById(R.id.editText1);
-            editor.setText("");
+            createNote();
         }
         else if (itemId == ACTION_LIST) {
             if(currentNote.name.length() == 0) {
@@ -424,8 +429,52 @@ public class AndroidZenWriterActivity extends SherlockActivity {
             listDialog.show();
             
         }
+        else if(itemId == ACTION_DELETE) {
+            AlertDialog.Builder confirm = new AlertDialog.Builder(this);
+
+            confirm.setTitle("Delete Note");
+            confirm.setMessage("Are you sure you want to delete this note?");
+
+
+            confirm.setPositiveButton("Yes",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,
+                                int whichButton) {
+                            int index = notes.indexOf(currentNote);
+                            notes.remove(index);
+                            File fileToDelete = getFileStreamPath(currentNote.filename);
+                            if(fileToDelete.exists()) {
+                                boolean deletedFile = fileToDelete.delete();
+                                Log.i("deleteNote", "Deleted file: " + fileToDelete.getAbsolutePath() + ": " + deletedFile);
+                            }
+                            if(notes.size() > 0) {
+                                switchToNote(Math.max(0,index - 1));
+                            }
+                            else {
+                                createNote();
+                            }
+                        }
+                    });
+
+            confirm.setNegativeButton("No",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,
+                                int whichButton) {
+                            // Canceled.
+                        }
+                    });
+
+            confirm.show();
+        }
 
         return ret;
+    }
+
+    private void createNote() {
+        currentNote = new Note();
+        notes.add(currentNote);
+        EditText editor = (EditText) findViewById(R.id.editText1);
+        editor.setText("");
     }
 
     boolean actionBarVisible = false;
