@@ -312,46 +312,46 @@ public class AndroidZenWriterActivity extends SherlockActivity {
                 "New Note")
                 .setIcon(android.R.drawable.ic_menu_add)
                 .setShowAsAction(
-                        com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_ALWAYS);
+                        com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_ALWAYS | com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 
         menu.add(com.actionbarsherlock.view.Menu.NONE, ACTION_LIST,
                 ACTION_LIST, "List Notes")
                 .setIcon(android.R.drawable.ic_menu_agenda)
                 .setShowAsAction(
-                        com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                        com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_IF_ROOM | com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         
         menu.add(com.actionbarsherlock.view.Menu.NONE, ACTION_EDIT,
                 ACTION_EDIT, "Rename")
                 .setIcon(android.R.drawable.ic_menu_edit)
                 .setShowAsAction(
-                        com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                        com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_IF_ROOM | com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 
         menu.add(com.actionbarsherlock.view.Menu.NONE, ACTION_SHARE,
                 ACTION_SHARE, "Share")
                 .setIcon(android.R.drawable.ic_menu_share)
                 .setShowAsAction(
-                        com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                        com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_IF_ROOM | com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         
 
         menu.add(com.actionbarsherlock.view.Menu.NONE, ACTION_DELETE,
                 ACTION_DELETE, "Delete Note")
                 .setIcon(android.R.drawable.ic_menu_delete)
                 .setShowAsAction(
-                        com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                        com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_IF_ROOM | com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 
 
         menu.add(com.actionbarsherlock.view.Menu.NONE, ACTION_SEARCH,
                 ACTION_SEARCH, "Search")
                 .setIcon(android.R.drawable.ic_menu_search)
                 .setShowAsAction(
-                        com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_ALWAYS);
+                        com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_ALWAYS | com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         
 
         menu.add(com.actionbarsherlock.view.Menu.NONE, ACTION_SETTINGS,
                 ACTION_SETTINGS, "Settings")
                 .setIcon(android.R.drawable.ic_menu_preferences)
                 .setShowAsAction(
-                        com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                        com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_IF_ROOM | com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         
 
         return true;
