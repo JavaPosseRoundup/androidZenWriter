@@ -56,8 +56,12 @@ public class ZenAdapter extends PagerAdapter {
 		container.addView(view);
 
 		if (position == 1) {
-			context.loadFile(AndroidZenWriterActivity.currentFilename);
 			EditText editor = (EditText) view.findViewById(R.id.editText1);
+            if(context.sharedContents != null && context.sharedContents != "")
+                editor.setText(context.sharedContents);
+            else
+                context.loadFile(AndroidZenWriterActivity.currentFilename);
+
 	        View.OnCreateContextMenuListener editorOnContextMenuCreateListener = new View.OnCreateContextMenuListener() {
 
 	            public void onCreateContextMenu(ContextMenu menu, View view, ContextMenuInfo menuInfo) {

@@ -30,7 +30,8 @@ public class AndroidZenWriterActivity extends SherlockActivity {
 
 	public static String currentFilename = "current.txt";
 	public static String settingsFilename = "settings.properties";
-
+	public String sharedContents;
+	
 	public static final int SELECT_PHOTO = 100;
 	private static final boolean ACTIONBAR = false;
 
@@ -42,12 +43,27 @@ public class AndroidZenWriterActivity extends SherlockActivity {
 	        }
 		super.onCreate(savedInstanceState);
 		//loadSettings();
+		
+		
 		setContentView(R.layout.main);
 		ViewPager pager = (ViewPager) findViewById(R.id.ViewPager1);
 		pager.setAdapter(new ZenAdapter(this));
 		pager.setCurrentItem(1, true);
 		
-        applyPreferences();
+		// load data from an intent if we were called from share
+		Intent sharedIntent = getIntent();
+		if(sharedIntent != null) {
+		    Bundle extras = getIntent().getExtras();
+		    if (extras != null) {
+		        // Get data via the key
+		        String contents = extras.getString(Intent.EXTRA_TEXT);
+		        if (contents != null) {
+		            sharedContents = contents;
+		        }
+		    }
+		}
+
+		applyPreferences();
         
 		
 	}
