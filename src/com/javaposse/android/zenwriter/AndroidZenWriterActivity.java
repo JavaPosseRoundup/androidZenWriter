@@ -6,13 +6,14 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Properties;
 
-import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
-
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockActivity;
-
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -26,25 +27,30 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.SubMenu;
+
 public class AndroidZenWriterActivity extends SherlockActivity {
 
-    public static String currentFilename = "current.txt";
     public static String settingsFilename = "settings.properties";
-    public String currentName = "";
-
+    protected Note currentNote = null;
+    protected List<Note> notes = new ArrayList<Note>();
     public static final int SELECT_PHOTO = 100;
 
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.Theme_Sherlock_Light);
+        setTheme(R.style.Theme_Sherlock_Light_ForceOverflow);
         getSupportActionBar().hide();
         super.onCreate(savedInstanceState);
-        // loadSettings();
+        loadSettings();
+        if(currentNote == null) {
+            currentNote = new Note();
+            notes.add(currentNote);
+        }
         setContentView(R.layout.main);
         ViewPager pager = (ViewPager) findViewById(R.id.ViewPager1);
         pager.setAdapter(new ZenAdapter(this));
@@ -68,8 +74,7 @@ public class AndroidZenWriterActivity extends SherlockActivity {
         EditText editText = (EditText) findViewById(R.id.editText1);
         String content = editText.getText().toString();
 
-        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,
-                "TODO NEED Subject!!!");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, currentNote.name);
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, content);
 
         startActivity(Intent.createChooser(sharingIntent, "Share via"));
@@ -78,21 +83,22 @@ public class AndroidZenWriterActivity extends SherlockActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        saveFile(currentFilename);
+        saveSettings();
+        saveFile(currentNote.filename);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // saveSettings();
-        saveFile(currentFilename);
+        saveSettings();
+        saveFile(currentNote.filename);
     }
 
     protected void saveFile(String filename) {
         FileOutputStream fos = null;
 
         EditText editText = (EditText) findViewById(R.id.editText1);
-        if(editText != null) {
+        if (editText != null) {
             String content = editText.getText().toString();
             try {
                 fos = openFileOutput(filename, MODE_PRIVATE);
@@ -107,7 +113,7 @@ public class AndroidZenWriterActivity extends SherlockActivity {
                     }
                 }
             }
-            Toast.makeText(this, "Saved file", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Saved file", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -172,24 +178,85 @@ public class AndroidZenWriterActivity extends SherlockActivity {
 
     }
 
-    /*
-     * public void saveSettings() { FileOutputStream fos = null;
-     * 
-     * try { fos = openFileOutput(settingsFilename, MODE_PRIVATE);
-     * settings.save(fos, "Settings saved at: " + new Date()); } catch
-     * (IOException e) { Log.e("SaveFile", "Failed to save file: ", e); }
-     * finally { if (fos != null) { try { fos.close(); } catch (IOException e) {
-     * } } } Toast.makeText(this, "Saved settings", Toast.LENGTH_LONG).show(); }
-     * 
-     * public void loadSettings() { FileInputStream fis = null;
-     * 
-     * File settingsFile = getFileStreamPath(settingsFilename); if
-     * (settingsFile.exists()) { try { fis = openFileInput(settingsFilename);
-     * settings.load(fis); } catch (IOException e) { Log.e("SaveFile",
-     * "Failed to save file: ", e); } finally { if (fis != null) { try {
-     * fis.close(); } catch (IOException e) { } } } } Toast.makeText(this,
-     * "Loaded settings", Toast.LENGTH_LONG).show(); }
-     */
+    public void saveSettings() {
+        FileOutputStream fos = null;
+
+        Properties settings = new Properties();
+        for (int i = 0; i < notes.size(); i++) {
+            Note note = notes.get(i);
+            String prefix = "note." + i + ".";
+            settings.setProperty(prefix + "id", note.id);
+            settings.setProperty(prefix + "name", note.name);
+            settings.setProperty(prefix + "filename", note.filename);
+            settings.setProperty(prefix + "lastModified",
+                    String.valueOf(note.lastModified.getTime()));
+            Log.i("saveSettings", "Saving Note Metadata: " + note);
+        }
+        settings.setProperty("currentNoteId", currentNote.id);
+        Log.i("saveSettings", "currentNoteId: " + currentNote.id);
+        try {
+            fos = openFileOutput(settingsFilename, MODE_PRIVATE);
+            settings.save(fos, "Settings saved at: " + new Date());
+        } catch (IOException e) {
+            Log.e("SaveFile", "Failed to save file: ", e);
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+        Toast.makeText(this, "Saved settings", Toast.LENGTH_SHORT).show();
+    }
+
+    public void loadSettings() {
+        FileInputStream fis = null;
+
+        File settingsFile = getFileStreamPath(settingsFilename);
+        if (settingsFile.exists()) {
+            Properties settings = new Properties();
+            try {
+                fis = openFileInput(settingsFilename);
+                settings.load(fis);
+            } catch (IOException e) {
+                Log.e("SaveFile", "Failed to save file: ", e);
+            } finally {
+                if (fis != null) {
+                    try {
+                        fis.close();
+                    } catch (IOException e) {
+                    }
+                }
+            }
+            String currentNoteId = "";
+            if (settings.containsKey("currentNoteId")) {
+                currentNoteId = settings.getProperty("currentNoteId");
+            }
+
+            for (int i = 0;; i++) {
+                String prefix = "note." + i + ".";
+                if (settings.containsKey(prefix + "id")) {
+                    String id = settings.getProperty(prefix + "id");
+                    String name = settings.getProperty(prefix + "name");
+                    String filename = settings.getProperty(prefix + "filename");
+                    Date lastModified = new Date(Long.valueOf(settings
+                            .getProperty(prefix + "lastModified")));
+                    Note note = new Note(id, name, filename, null, lastModified);
+                    Log.i("loadSettings", "Loaded Note: " + note);
+                    notes.add(note);
+                    if (note.id.equals(currentNoteId)) {
+                        currentNote = note;
+                    }
+
+                } else {
+                    break;
+                }
+            }
+        }
+        Toast.makeText(this, "Loaded settings", Toast.LENGTH_SHORT).show();
+    }
+
     public static Drawable getDrawable(Context context, String filename) {
 
         BitmapFactory.Options opts = new BitmapFactory.Options();
@@ -219,86 +286,128 @@ public class AndroidZenWriterActivity extends SherlockActivity {
         return true;
     }
 
-    public static final int ACTION_EDIT = 1;
-    public static final int ACTION_SEARCH = 2;
-    public static final int ACTION_SAVE = 3;
-    public static final int ACTION_SHARE = 4;
-    
+    public static final int ACTION_NEW = 1;
+    public static final int ACTION_LIST = 2;
+    public static final int ACTION_EDIT = 3;
+    public static final int ACTION_SEARCH = 4;
+    public static final int ACTION_SAVE = 5;
+    public static final int ACTION_SHARE = 6;
+
     // Action Bar
     @Override
     public boolean onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu) {
-        menu.add(com.actionbarsherlock.view.Menu.NONE, ACTION_EDIT, ACTION_EDIT, "Edit")
-                .setIcon(android.R.drawable.ic_menu_edit)
+
+        //SubMenu sub = menu.addSubMenu("Sub");
+        
+        menu.add(com.actionbarsherlock.view.Menu.NONE, ACTION_NEW, ACTION_NEW,
+                "New Note")
+                .setIcon(android.R.drawable.ic_menu_add)
                 .setShowAsAction(
                         com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_ALWAYS);
 
-        menu.add(com.actionbarsherlock.view.Menu.NONE, ACTION_SEARCH, ACTION_SEARCH, "Search")
+        menu.add(com.actionbarsherlock.view.Menu.NONE, ACTION_LIST,
+                ACTION_LIST, "List Notes")
+                .setIcon(android.R.drawable.ic_menu_agenda)
+                .setShowAsAction(
+                        com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        
+        menu.add(com.actionbarsherlock.view.Menu.NONE, ACTION_EDIT,
+                ACTION_EDIT, "Rename")
+                .setIcon(android.R.drawable.ic_menu_edit)
+                .setShowAsAction(
+                        com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+        menu.add(com.actionbarsherlock.view.Menu.NONE, ACTION_SHARE,
+                ACTION_SHARE, "Share")
+                .setIcon(android.R.drawable.ic_menu_share)
+                .setShowAsAction(
+                        com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+
+        menu.add(com.actionbarsherlock.view.Menu.NONE, ACTION_SEARCH,
+                ACTION_SEARCH, "Search")
                 .setIcon(android.R.drawable.ic_menu_search)
                 .setShowAsAction(
                         com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_ALWAYS);
+        
 
-        menu.add(com.actionbarsherlock.view.Menu.NONE, ACTION_SAVE, ACTION_SAVE, "Save")
-                .setIcon(android.R.drawable.ic_menu_save)
-                .setShowAsAction(
-                        com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_ALWAYS);
-
-        menu.add(com.actionbarsherlock.view.Menu.NONE, ACTION_SHARE, ACTION_SHARE, "Share")
-                .setIcon(android.R.drawable.ic_menu_share)
-                .setShowAsAction(
-                        com.actionbarsherlock.view.MenuItem.SHOW_AS_ACTION_ALWAYS);
         return true;
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(
             com.actionbarsherlock.view.MenuItem item) {
         boolean ret = super.onOptionsItemSelected(item);
         int itemId = item.getItemId();
-        if(itemId == ACTION_SAVE) {
-            // TODO: Use currentName + ".txt" as filename
-            saveFile(currentFilename);
+        if (itemId == ACTION_SAVE) {
+            saveFile(currentNote.filename);
+            saveSettings();
             ret = true;
-        }
-        else if(itemId == ACTION_SHARE) {
+        } else if (itemId == ACTION_SHARE) {
             shareStuff();
             ret = true;
-        }
-        else if(itemId == ACTION_SEARCH) {
+        } else if (itemId == ACTION_SEARCH) {
             // TODO: Implement Search
+        } else if (itemId == ACTION_EDIT) {
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+            alert.setTitle("Edit Note");
+            alert.setMessage("Enter Note Name:");
+
+            // Set an EditText view to get user input
+            final EditText input = new EditText(this);
+            input.setText(currentNote.name);
+            alert.setView(input);
+
+            alert.setPositiveButton("Ok",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,
+                                int whichButton) {
+                            String value = input.getText().toString();
+                            currentNote.name = value;
+                        }
+                    });
+
+            alert.setNegativeButton("Cancel",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,
+                                int whichButton) {
+                            // Canceled.
+                        }
+                    });
+
+            alert.show();
+        } else if (itemId == ACTION_NEW) {
+            currentNote = new Note();
+            notes.add(currentNote);
+            EditText editor = (EditText) findViewById(R.id.editText1);
+            editor.setText("");
         }
-        else if(itemId == ACTION_EDIT) {
-            // TODO: Implement Name Edit.
-            // TODO: currentFilename = currentName + ".txt"
-        }
-        
+
         return ret;
     }
-    
+
     boolean actionBarVisible = false;
-    
+
     public void toggleTheme() {
-        if(!actionBarVisible) {
+        if (!actionBarVisible) {
             this.getSupportActionBar().show();
-        }
-        else {
+        } else {
             this.getSupportActionBar().hide();
         }
         actionBarVisible = !actionBarVisible;
     }
-    
-    
-    
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         boolean ret = super.onTouchEvent(event);
-        
-        if(event.getAction() == MotionEvent.ACTION_UP) {
+
+        if (event.getAction() == MotionEvent.ACTION_UP) {
             toggleTheme();
         }
-        
+
         return ret;
-        
+
     }
-    
-    
+
 }

@@ -58,7 +58,7 @@ public class ZenAdapter extends PagerAdapter {
         container.addView(view);
 
         if (position == 1) {
-            context.loadFile(AndroidZenWriterActivity.currentFilename);
+            context.loadFile(context.currentNote.filename);
             EditText editor = (EditText) view.findViewById(R.id.editText1);
             View.OnCreateContextMenuListener editorOnContextMenuCreateListener = new View.OnCreateContextMenuListener() {
 
