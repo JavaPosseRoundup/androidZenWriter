@@ -39,6 +39,7 @@ import com.actionbarsherlock.app.SherlockActivity;
 public class AndroidZenWriterActivity extends SherlockActivity {
 
     public static String settingsFilename = "settings.properties";
+    public String sharedContents;
     protected Note currentNote = null;
     protected List<Note> notes = new ArrayList<Note>();
     public static final int SELECT_PHOTO = 100;
@@ -59,8 +60,20 @@ public class AndroidZenWriterActivity extends SherlockActivity {
         pager.setAdapter(new ZenAdapter(this));
         pager.setCurrentItem(1, true);
 
-        applyPreferences();
+        // load data from an intent if we were called from share
+        Intent sharedIntent = getIntent();
+        if(sharedIntent != null) {
+            Bundle extras = getIntent().getExtras();
+            if (extras != null) {
+                // Get data via the key
+                String contents = extras.getString(Intent.EXTRA_TEXT);
+                if (contents != null) {
+                    sharedContents = contents;
+                }
+            }
+        }
 
+        applyPreferences();
     }
 
     public static final int EDIT_PREFERENCES = 1;
@@ -101,8 +114,6 @@ public class AndroidZenWriterActivity extends SherlockActivity {
     
     protected void saveFile(String filename) {
         FileOutputStream fos = null;
-        
-        
 
         EditText editText = (EditText) findViewById(R.id.editText1);
         if (editText != null) {
