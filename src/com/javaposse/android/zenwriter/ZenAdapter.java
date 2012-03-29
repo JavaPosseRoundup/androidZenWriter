@@ -62,7 +62,7 @@ public class ZenAdapter extends PagerAdapter {
             if(context.sharedContents != null && context.sharedContents != "")
                 context.createNote(context.sharedContents);
             else
-                context.loadFile(context.currentNote.filename);
+                context.loadFile(context.currentNote.getFilename());
 
             View.OnCreateContextMenuListener editorOnContextMenuCreateListener = new View.OnCreateContextMenuListener() {
 

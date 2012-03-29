@@ -27,8 +27,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -90,7 +88,7 @@ public class AndroidZenWriterActivity extends SherlockActivity {
         EditText editText = (EditText) findViewById(R.id.editText1);
         String content = editText.getText().toString();
 
-        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, currentNote.name);
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, currentNote.getName());
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, content);
 
         startActivity(Intent.createChooser(sharingIntent, "Share via"));
@@ -107,7 +105,7 @@ public class AndroidZenWriterActivity extends SherlockActivity {
     protected void onDestroy() {
         super.onDestroy();
         saveSettings();
-        saveFile(currentNote.filename);
+        saveFile(currentNote.getFilename());
     }
 
     int defaultNameLength = 30;
@@ -118,8 +116,8 @@ public class AndroidZenWriterActivity extends SherlockActivity {
         EditText editText = (EditText) findViewById(R.id.editText1);
         if (editText != null) {
             String content = editText.getText().toString();
-            if(currentNote.name.length() == 0) {
-                currentNote.name = currentNote.getDefaultNameFromContent(content, defaultNameLength);
+            if(currentNote.getName().length() == 0) {
+                currentNote.setName(currentNote.getDefaultNameFromContent(content, defaultNameLength));
             }
             try {
                 fos = openFileOutput(filename, MODE_PRIVATE);
@@ -207,10 +205,11 @@ public class AndroidZenWriterActivity extends SherlockActivity {
             Note note = notes.get(i);
             String prefix = "note." + i + ".";
             settings.setProperty(prefix + "id", note.id);
-            settings.setProperty(prefix + "name", note.name);
-            settings.setProperty(prefix + "filename", note.filename);
+            settings.setProperty(prefix + "name", note.getName());
+            settings.setProperty(prefix + "filename", note.getFilename());
+            settings.setProperty(prefix + "new", note.isNew() ? "true" : "false");
             settings.setProperty(prefix + "lastModified",
-                    String.valueOf(note.lastModified.getTime()));
+                    String.valueOf(note.getLastModified().getTime()));
             Log.i("saveSettings", "Saving Note Metadata: " + note);
         }
         settings.setProperty("currentNoteId", currentNote.id);
@@ -261,9 +260,10 @@ public class AndroidZenWriterActivity extends SherlockActivity {
                     String id = settings.getProperty(prefix + "id");
                     String name = settings.getProperty(prefix + "name");
                     String filename = settings.getProperty(prefix + "filename");
+                    boolean isNew = settings.getProperty(prefix + "new").equalsIgnoreCase("true");
                     Date lastModified = new Date(Long.valueOf(settings
                             .getProperty(prefix + "lastModified")));
-                    Note note = new Note(id, name, filename, null, lastModified);
+                    Note note = new Note(id, name, filename, null, lastModified, isNew);
                     Log.i("loadSettings", "Loaded Note: " + note);
                     notes.add(note);
                     if (note.id.equals(currentNoteId)) {
@@ -374,7 +374,7 @@ public class AndroidZenWriterActivity extends SherlockActivity {
         boolean ret = super.onOptionsItemSelected(item);
         int itemId = item.getItemId();
         if (itemId == ACTION_SAVE) {
-            saveFile(currentNote.filename);
+            saveFile(currentNote.getFilename());
             saveSettings();
             ret = true;
         } else if (itemId == ACTION_SHARE) {
@@ -392,7 +392,7 @@ public class AndroidZenWriterActivity extends SherlockActivity {
 
             // Set an EditText view to get user input
             final EditText input = new EditText(this);
-            input.setText(currentNote.name);
+            input.setText(currentNote.getName());
             alert.setView(input);
 
             alert.setPositiveButton("Ok",
@@ -400,7 +400,7 @@ public class AndroidZenWriterActivity extends SherlockActivity {
                         public void onClick(DialogInterface dialog,
                                 int whichButton) {
                             String value = input.getText().toString();
-                            currentNote.name = value;
+                            currentNote.setName(value);
                         }
                     });
 
@@ -417,10 +417,10 @@ public class AndroidZenWriterActivity extends SherlockActivity {
             createNote(null);
         }
         else if (itemId == ACTION_LIST) {
-            if(currentNote.name.length() == 0) {
+            if(currentNote.getName().length() == 0) {
                 EditText editor = (EditText) findViewById(R.id.editText1);
                 String content = editor.getText().toString();
-                currentNote.name = Note.getDefaultNameFromContent(content, defaultNameLength);
+                currentNote.setName(Note.getDefaultNameFromContent(content, defaultNameLength));
             }
             final AlertDialog.Builder listDialog = new AlertDialog.Builder(this);
             listDialog.setTitle("Select Active Note");
@@ -462,7 +462,7 @@ public class AndroidZenWriterActivity extends SherlockActivity {
                                 int whichButton) {
                             int index = notes.indexOf(currentNote);
                             notes.remove(index);
-                            File fileToDelete = getFileStreamPath(currentNote.filename);
+                            File fileToDelete = getFileStreamPath(currentNote.getFilename());
                             if(fileToDelete.exists()) {
                                 boolean deletedFile = fileToDelete.delete();
                                 Log.i("deleteNote", "Deleted file: " + fileToDelete.getAbsolutePath() + ": " + deletedFile);
@@ -521,10 +521,10 @@ public class AndroidZenWriterActivity extends SherlockActivity {
     }
     
     private void switchToNote(int position) {
-        saveFile(currentNote.filename);
+        saveFile(currentNote.getFilename());
         saveSettings();
         currentNote = notes.get(position);
-        loadFile(currentNote.filename);
+        loadFile(currentNote.getFilename());
     }
 
 }
