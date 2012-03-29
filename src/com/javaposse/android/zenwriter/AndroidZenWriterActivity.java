@@ -41,6 +41,7 @@ public class AndroidZenWriterActivity extends SherlockActivity {
     protected Note currentNote = null;
     protected List<Note> notes = new ArrayList<Note>();
     public static final int SELECT_PHOTO = 100;
+    public static final int SELECT_AUDIO = 200;
 
     /** Called when the activity is first created. */
     @Override
@@ -117,7 +118,7 @@ public class AndroidZenWriterActivity extends SherlockActivity {
         if (editText != null) {
             String content = editText.getText().toString();
             if(currentNote.getName().length() == 0) {
-                currentNote.setName(currentNote.getDefaultNameFromContent(content, defaultNameLength));
+                currentNote.setName(Note.getDefaultNameFromContent(content, defaultNameLength));
             }
             try {
                 fos = openFileOutput(filename, MODE_PRIVATE);
@@ -216,7 +217,7 @@ public class AndroidZenWriterActivity extends SherlockActivity {
         Log.i("saveSettings", "currentNoteId: " + currentNote.id);
         try {
             fos = openFileOutput(settingsFilename, MODE_PRIVATE);
-            settings.save(fos, "Settings saved at: " + new Date());
+            settings.store(fos, "Settings saved at: " + new Date());
         } catch (IOException e) {
             Log.e("SaveFile", "Failed to save file: ", e);
         } finally {
@@ -285,7 +286,7 @@ public class AndroidZenWriterActivity extends SherlockActivity {
         Bitmap backgroundBitmap = BitmapFactory.decodeFile(filename, opts);
 
         if (backgroundBitmap != null) {
-            BitmapDrawable drawable = new BitmapDrawable(backgroundBitmap);
+            BitmapDrawable drawable = new BitmapDrawable(context.getResources(), backgroundBitmap);
             return drawable;
 
         }

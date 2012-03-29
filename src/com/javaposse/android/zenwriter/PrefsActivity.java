@@ -49,6 +49,14 @@ public class PrefsActivity extends PreferenceActivity {
         return true;
     }
 
+    public boolean selectTypingSound(Preference pref) {
+        Intent soundPickerIntent = new Intent(Intent.ACTION_PICK);
+        soundPickerIntent.setType("audio/*");
+        this.startActivityForResult(soundPickerIntent,
+                AndroidZenWriterActivity.SELECT_AUDIO);
+        return true;
+    }
+
     protected void onActivityResult(int requestCode, int resultCode,
             Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);

@@ -2,13 +2,18 @@ package com.javaposse.android.zenwriter;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.support.v4.view.PagerAdapter;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -20,6 +25,9 @@ import android.widget.TextView;
 public class ZenAdapter extends PagerAdapter {
 
     private AndroidZenWriterActivity context;
+    private SoundPool soundPool;
+    private int soundID;
+    boolean soundLoaded = false;
 
     public ZenAdapter(AndroidZenWriterActivity context) {
         super();
@@ -79,6 +87,40 @@ public class ZenAdapter extends PagerAdapter {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     return context.onTouchEvent(event);
+                }
+            });
+
+            soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
+            soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+                @Override
+                public void onLoadComplete(SoundPool soundPool, int sampleId,
+                        int status) {
+                    soundLoaded = true;
+                }
+            });
+            soundID = soundPool.load(context, R.raw.typewriterkey, 1);
+
+            editor.setOnKeyListener(new OnKeyListener() {
+                
+                @Override
+                public boolean onKey(View v, int keyCode, KeyEvent event) {
+                    if (event.getAction()!=KeyEvent.ACTION_DOWN) {
+                        
+                        AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+                        float actualVolume = (float) audioManager
+                                .getStreamVolume(AudioManager.STREAM_MUSIC);
+                        float maxVolume = (float) audioManager
+                                .getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+                        float volume = actualVolume / maxVolume;
+                        // Is the sound loaded already?
+                        if (soundLoaded) {
+                            soundPool.play(soundID, volume, volume, 1, 0, 1f);
+                        }
+                        
+                        return true;
+                    }
+                    else
+                        return false;
                 }
             });
         }
