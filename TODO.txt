@@ -3,3 +3,5 @@ Support customization of Margins?
 Flip back and forth to get to different documents
 Search Action
 Package for Android Market (Play)
+Icon for app
+Signing of app and deployment to store.
